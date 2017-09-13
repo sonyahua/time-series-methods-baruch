@@ -80,30 +80,52 @@ There are 2 time series then a combined time series
 For both ocsillation and recruitment, there's seasonal monthly cycles
 There seems to be strong dependence between oscillation and recruitment based on the overlapped time series
 
-
+```{r fig.width=12}
 # ------------------------------------------------------------------------------------
 # Gaussian white noise, MA, & AR
 
-w=rnorm(500)
-v=filter(w,rep(1/3,3),sides=1)
+w=rnorm(500) # 500 random obs from a normal distribution
+
+# Moving average with time lag = 3
+v=filter(w,rep(1/3,3),sides=1)  
+# Filter uses moving average method by default
+# 3 elements with .33 weight
+# If sides = 1 the filter coefficients are for past values only; if sides = 2 they are centred around lag 0. In this case the length of the filter should be odd, but if it is even, more of the filter is forward in time than backward.
+
+# Autoregression sequence with order 2 (2 coefficients)
 x=filter(rnorm(550),filter=c(1,-.9),method="recursive")[-(1:50)]
+# autogressed on 550 vs. 500 because we need previous 2 values in order to estimate x each time. Add 50 extra obs to circumvent this issue
+# filter = the coefficients or vector of filter coefficients in reverse time order (as for AR or MA coefficients).
+# when method = recursive, autoregression is used
 
 par(mfrow=c(3,1))
 plot.ts(w,main="Gaussian white noise")
 plot.ts(v,main="Moving average")
 plot.ts(x,main="Autoregression")
+```
+*Observe* 
+* For gaussian, most of the values are between -3 and 3. There are also no specific patterns in the series. We can also draw a normal probability plot to check normality
+* for moving average, we lose some information in the beginning (unstable) since we need previous values in order to predict the next value. These values will show up as missing for first 2 values. The series is smoothed. Values tend to be less extreme due to averagine. 
+* For Autoregression, there is a cylical periodicity. 
 
+Each of these models capture certain dependence in the time series. 
+
+```{r}
 
 # ------------------------------------------------------------------------------------
 # Random walk
 
-set.seed(154)
-w=rnorm(200); x=cumsum(w)
-wd=w+.2; xd=cumsum(wd)
-plot.ts(xd,ylim=c(-5,55),ylab="",main="random walk")
-lines(x)
-lines(.2*(1:200),lty="dashed")
+set.seed(154) #psedorandom # generator
+w=rnorm(200); x=cumsum(w) # w= white noise, x = cumulative sum
+wd=w+.2; xd=cumsum(wd) #wd = with drift (0.2)
+plot.ts(xd,ylim=c(-5,55),ylab="",main="random walk") 
+lines(x, col="darkblue") # without drift
+lines(.2*(1:200),lty="dashed") # add a reference line
 
+```
+*Observe*
+* Without drift, we should expect a more horizontal randomness
+* With drift, we should expect a trend (increasing in this case)
 
 # ------------------------------------------------------------------------------------
 # Example: sample ACF of 200 simulated values of iid N(0,1) noise
