@@ -126,7 +126,7 @@ lines(.2*(1:200),lty="dashed") # add a reference line
 *Observe*
 * Without drift, we should expect a more horizontal randomness
 * With drift, we should expect a trend (increasing in this case)
-
+```{r}
 # ------------------------------------------------------------------------------------
 # Example: sample ACF of 200 simulated values of iid N(0,1) noise
 
@@ -134,6 +134,9 @@ x=rnorm(200)
 par(mfrow=c(2,1))
 plot.ts(x,type="o",ylab="",main="Gaussian white noise"); abline(h=0)
 acf(x,40,main="")
+```
+
+
 
 
 # ------------------------------------------------------------------------------------

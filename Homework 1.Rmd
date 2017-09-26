@@ -1,0 +1,90 @@
+---
+title: "Homework-1"
+author: "Sonya Hua"
+date: "September 25, 2017"
+output: rmarkdown::github_document
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+
+# set global display parameters
+knitr::opts_chunk$set(fig.width=10, fig.height=10, echo = TRUE, fig.align="center") 
+```
+
+### Question 1. 
+
+Create a vector for the following data set and provide mean, std dev:  27, 30, 33, 36, 39, 42, 45, 48, 51, and 5
+
+```{r}
+x <- c(27, 30, 33, 36, 39, 42, 45, 48, 51, 5)
+
+print(paste("The standard deviation is: ", sd(x)))
+print(paste("The mean of vector x is: ", mean(x)))
+```
+### Question 2
+
+a).  Create a numeric vector x of length 80 that ranges from −pi to pi
+b). Create a vector y1 that is the sine of x (in radians)
+c). Create a vector y2 that is the cosine of x (in radians)
+d).  Plot y1 vs. x as a series of points joined by lines. On the same graph, add red-colored points for y2 vs x. 
+
+```{r}
+
+# a) 
+(x <- seq(-pi,pi,length=80))
+```
+
+```{r}
+# b)
+(y1 <- sin(x))
+
+```
+
+```{r}
+# c)
+(y2 <- cos(x))
+```
+
+```{r}
+# d)  Plot y1 vs. x as a series of points joined by lines. 
+# On the same graph, add red-colored points for y2 vs x.
+par(mfrow=c(1,1)) 
+plot(y1, x, type="b")
+lines(y2,x, type="p", col="red")
+
+```
+
+### Question 3
+
+a). Simulate a completely random process of length 48 with independent normal values. Repeat this exercise three more times with a new simulation each time. 
+
+b). Draw the four time series in a 2-by-2 layout
+
+```{r}
+# a)
+set.seed(3856)
+ts1 <- rnorm(n=48)
+
+set.seed(2345)
+ts2 <- rnorm(n=48)
+
+set.seed(9987)
+ts3 <- rnorm(n=48)
+
+set.seed(96387)
+ts4 <- rnorm(n=48)
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot.ts(ts1)
+plot.ts(ts2)
+plot.ts(ts3)
+plot.ts(ts4)
+```
+
+
+
