@@ -5,8 +5,13 @@ date: "September 7, 2017"
 output: html_document
 ---
 
+
 ```{r setup, include=FALSE}
+library(knitr)
 knitr::opts_chunk$set(echo = TRUE)
+
+# set global display parameters
+knitr::opts_chunk$set(fig.width=8, fig.height=5, echo = TRUE, fig.align="center") 
 ```
 install.packages("astsa")
 
@@ -135,9 +140,12 @@ par(mfrow=c(2,1))
 plot.ts(x,type="o",ylab="",main="Gaussian white noise"); abline(h=0)
 acf(x,40,main="")
 ```
+*Obs:* There are no significant deviations from normal ACF. Above is a time series plot (x-axis=time). Below is an ACF plot (x-axis = time lag). The height at lag 0 for ACF is always 1. It's not informative at all. Some packages will drop this from the ACF plot. 
 
+We can check % of ACF outside the dashed bounds for any non- iid noise (1.96/sqrt(n), 95% Confidence Level). Most of the ACF's are within bounds. We conclude these 200 observations are from iid noise. There's 2 points outside of ACF possibly due to sampling variability. It also depends at which lag is ACF outside the bounds. At earlier lags, it's generally more acceptable. In general, time series has a short memory. When time lag is small, we should expect time points to be more likely to be correlated. 
 
-
+First check for % of ACF outside of bounds. Pay more attention to ACF at small time lags (time=1,2,etc.). If there is larger ACF at earlier points, then we can say it's correlated and not iid.
+```{r}
 
 # ------------------------------------------------------------------------------------
 # SOI and recruitment
@@ -148,6 +156,12 @@ acf(soi,48,main="Southern Oscillation Index")
 acf(rec,48,main="Recruitment")
 ccf(soi,rec,48,main="SOI vs Recruitment",ylab="CCF")
 
+```
+*Obs:* Lag represents years (1, 2, 3 years). There's high ACF at time lag 12. Positive ACF means they are positive correlated. There's also a semi-year pattern at month 6 that's negatively correlated. 
+
+For the third chart, it's the CCF. X-axis (distance is symmetric with positive h values and negative h values as well). We notice between lag 0 and -2, there's a stronger magnitude at about month 6. SOI is X, Recruitment is Y. SOI at time = 6 is highly correlated with Recruitment at time = 6. The SOI leads Recruitment by about 6 months. 
+
+```{r}
 
 # ------------------------------------------------------------------------------------
 # Soil surface temperatures
@@ -164,3 +178,8 @@ par(mar=c(1,2.5,0,0)+.1)
 persp(-40:40,-20:20,rs3,phi=30,theta=30,expand=30,scale="FALSE",ticktype="detailed",xlab="row lags",ylab="column lags",zlab="ACF")
 
 
+
+```
+*Obs*: We need a 3D graph to visualize rows, columns, and temperature. s is a 2D vector (we have rows and columns) Temperature represents the time series. 
+
+The 2nd plot is the ACF
