@@ -1,0 +1,97 @@
+---
+title: "HW3"
+author: "Sonya Hua"
+date: "October 15, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Problem 2.2
+(a) Add another component to the regression in (2.25) that accounts for the particulate count 4 weeks prior. State your conclusion
+
+```{r}
+
+# ------------------------------------------------------------------------------------
+# Pollution, temperature and mortality
+library(astsa)
+data(cmort); data(tempr); data(part)
+
+
+data2=ts.intersect(cmort, tempr, part, partL4=lag(part,-4), dframe=TRUE)  # lag particulates by 4 weeks
+temp=data2$tempr-mean(data2$tempr) # center temperature
+temp2=data2$temp^2
+trend=time(data2$cmort) # time
+fit=lm(cmort~trend+temp+temp2+part+partL4, data=data2, na.action=NULL)
+summary(fit) # regression results
+
+```
+**State your Conclusion**: When lagging particulates by 4 weeks, there is a significant predictive ability of mortality rates for particulates 4 weeks in advance. P-value for partL4 is significant at p < 0.05 level. The model explains ~60% of the variance found in the data with an adjusted r-quare of 0.6041. 
+
+(b) Draw a scatterplot matrix of M,T,P, and P at lag t-4, then calculate the pairwise correlations between the series. 
+
+```{r}
+#install.packages("picante")
+library(picante)
+#Insert the name of your dataset in the code below
+correlation <- cor.table(data2, cor.method="pearson")
+correlation$r
+```
+**Compare the relationship between M and P vs. M and P at lag t-4. ** When comparing the relationship between M vs P, and M vs. P at lag t-4, there is a strong correlation in both cases. though the cor(M,P) is weaker compared to M vs. P at lag t-4. The cor(cmort, part) is .44 and the cor(cmort, part at lag 4) is .53.  
+
+### Problem 2.8
+
+(a) Argue that the glacial vares series exhibits heteroscedasticity by computing the sample variance over the first half and the second half of the data. 
+
+```{r}
+data(varve)
+plot(varve,main="varve",ylab="")
+# Compute sample variances of first half and second half 
+var(varve[1:317])   # Variance of first half of varve series
+var(varve[318:length(varve)]) # Variance of second half
+```
+**Argument** : Observe the notably larger variance in the 2nd half of the varve series (variance = 594) vs. the first half of the series (variance = 133). The time series plot also shows a noticeably larger variance in the second half of the time series. 
+
+```{r}
+data(varve)
+par(mfrow=c(2,1))
+plot(varve,main="varve",ylab="")
+plot(log(varve),main="log(varve)",ylab="" )
+```
+**Argue that the log transformation stabilizes the variance over the series:** As seen in above plots of before vs. after log transformation, we see a flatter variance in the log transformation compared to series without transformation. It has stabilized the variance more after log transformation as the series seems to stabilize around the value 3.
+
+
+Plot the histograms of glacial varves series and log-transformation of the glacial vares series to see whether the approximation to normality is improved by transforming the data
+
+```{r}
+par(mfrow=c(1,2))
+hist(varve)
+hist(log(varve))
+```
+
+** Observe ** : We see a more normal distribution fo the glacial varve series after log-transformation. There is almost no skew vs. the original series where it was left-skewed with a long right tail. 
+
+(b) Plot the series yt (log of xt). Do any time intervals of the order 100 yrs, exist where one can observe behavior comparable to that observed in the gloabl temperature records in Figure 1.2? 
+
+**Answer** Please see plot above. At time = 300, we can observe behavior comparable to that observed in Figure 1.2, where there is an upward trend in the series, and a leveling off at time = 450 , then a sharp upward trend at about time = 550. 
+
+(c) Examine the sample ACF of yt and comment
+
+```{r}
+acf(log(varve),135)
+```
+
+**Comment** There are significant correlations at time lag 2 onwards. Lag 2 seems to be a good contender for a lag variable as its very significant. 
+
+(d) Compute the difference (ut) by differencing in the first order, examine its time plot and Sample ACF, and argue that differencing hte logged varve data produces a reasonably stationary series. 
+
+```{r}
+u = diff(log(varve), 1)
+plot(u)
+acf(u)
+```
+**Argument** Notice that we do not see any significant trends after differencing the log-transformed varve series whereas before, we saw an upward trend around time=300 and a sharp upward trend after time=500. The plot shows a more stationary time series. A practical interpretion for ut the annual change in varve thickness. 
+
+However, judging by the sample ACF, there is still correlation within the data at lag 2, which suggests there's furthermore to be done so the time series is more stationary. 
+

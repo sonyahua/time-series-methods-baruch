@@ -169,7 +169,7 @@ ma53=filter(cmort,sides=2,rep(1,53)/53) # K = 26 (weekly)
 plot(cmort,type="p",ylab="mortality")
 lines(ma5,col="blue"); lines(ma53,col="red")
 ```
-
+*Obs*: Red trend is considerably a smoother moving average than then blue trend
 
 ```{r}
 # ------------------------------------------------------------------------------------
@@ -196,4 +196,8 @@ lines(ksmooth(time(cmort),cmort,"normal",bandwidth=2),col="red")
 
 
 ```
+*Obs*: At b=2, we have a larger bandwidth and as a result a smoother line (red). 
+
+All 3 methods produce reasonable stationarity. In this case, non-parametric methods seem to outperform parametric methods. 
+
 

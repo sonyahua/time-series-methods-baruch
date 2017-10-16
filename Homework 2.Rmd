@@ -1,0 +1,77 @@
+---
+title: "HW 2 (Chapter 1) By Sonya Hua"
+output: html_notebook
+---
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+
+# set global display parameters
+knitr::opts_chunk$set(fig.width=8, fig.height=7, echo = TRUE, fig.align="center") 
+```
+
+
+# Problem 1.20
+
+###Simulate a series of n=500 Gausssian white noise observations as in Example 1.8 and compute the sample ACF to lag =20. 
+
+```{r}
+x=rnorm(500)
+par(mfrow=c(2,1),mar=c(5,5,3,3), oma=c(3,0,0,0))
+
+plot.ts(x,type="o",ylab="",main="Gaussian white noise"); abline(h=0)
+acf(x,20,main="Sample ACF")
+
+
+```
+###Compare the sample ACF to the actual ACF. 
+
+The mean and autocovariance of the white noise series is 0 with no significant covariance. The white noice variates are normally distributed and is weakly stationary compared to actual ACF of popluation which is strictly stationary.
+
+###Repeat part (a) using only n=50. 
+```{r}
+x=rnorm(50)
+par(mfrow=c(2,1),mar=c(5,5,3,3), oma=c(3,0,0,0))
+
+plot.ts(x,type="o",ylab="",main="Gaussian white noise"); abline(h=0)
+acf(x,20,main="Sample ACF")
+
+
+```
+###How does changing n affect the results?
+
+After reducing sample size to n=50, the series still seems to be stationary with mean 0 and correlation around 0. 
+
+
+# Problem 1.21
+
+###Simulate a series of n=500 moving average observations as in Example 1.9 and compute the sample ACF to lag 20.
+
+
+```{r}
+# Moving average with time lag = 3
+x=rnorm(500)
+par(mfrow=c(2,1),mar=c(5,5,3,3), oma=c(3,0,0,0))
+v=filter(x,rep(1/3,3),sides=1)  
+
+plot.ts(x,type="o",ylab="",main="Moving Average with time lag =3"); abline(h=0)
+acf(x,20,main="Sample ACF")
+
+```
+###Compare the sample ACF to the actual ACF
+
+The mean and autocovariance of the white noise series is close to 0, which means the series is stationary.The white noise variates are normally distributed and is weakly stationary compared to actual ACF which is strictly stationary where probabilistic behavior of every collection of time points is identical to that of the time shifted set 
+
+
+
+###Repeat part (a) using only n=50. 
+```{r}
+x=rnorm(50)
+par(mfrow=c(2,1),mar=c(5,5,3,3), oma=c(3,0,0,0))
+v=filter(x,rep(1/3,3),sides=1)  
+
+plot.ts(x,type="o",ylab="",main="Moving Average with time lag=3"); abline(h=0)
+acf(x,20,main="Sample ACF")
+```
+###How does changing n affect the results? 
+Changing n reduces the sample size and thereby increases sampling error. At lag 5, we see an almost significant correlation which is likely due to sampling error.
